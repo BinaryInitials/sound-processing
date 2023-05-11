@@ -1,0 +1,31 @@
+{
+    "project_name": "sound-processing",
+    "media_filename": "test3.mov",
+    "data":
+    [
+        {
+            "fragment_name": "Setting 1",
+            "start_time": 26,
+            "end_time": 42,
+            "rpm": 20
+        },
+        {
+            "fragment_name": "Setting 2",
+            "start_time": 47,
+            "end_time": 65,
+            "rpm": 40
+        },
+        {
+            "fragment_name": "Setting 3",
+            "start_time": 70,
+            "end_time": 92,
+            "rpm": 60
+        },
+        {
+            "fragment_name": "Setting 4",
+            "start_time": 95,
+            "end_time": 110,
+            "rpm": 80
+        }
+    ]
+}
