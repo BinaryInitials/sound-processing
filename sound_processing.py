@@ -14,6 +14,7 @@ def find_max_frequency(frequencies, amplitudes):
 			max_frequency = frequencies[index]
 	return {"max_amplitude": max_amplitude, "max_frequency": max_frequency}
 
+MAX_FREQUENCY = 2000
 USAGE="usage: [sound fragment]"
 HELP = f"{USAGE}\nThis script takes one argument:\nsound fragment: the name of the file that contains the fragment of interest"
 if len(sys.argv) > 1 and re.match(r"^(help|h|usage)$", sys.argv[1]) != None:
@@ -37,6 +38,15 @@ fft_out_left_channel = np.abs(rfft(data[:,0]))
 fft_out_right_channel = np.abs(rfft(data[:,1]))
 
 frequencies = rfftfreq(N, 1 / rate)
+
+# Writing data to file
+header = ["frequency", "left_channel", "right_channel"]
+with open(f"{fragment_filename_without_extension}.csv", "w") as file:
+	file.write(",".join(header) + "\n")
+	for i, frequency in enumerate(frequencies):
+		if frequency > MAX_FREQUENCY:
+			break
+		file.write(f"{frequency},{fft_out_left_channel[i]},{fft_out_right_channel[i]}\n")
 
 # Find max frequencies
 max_frequency_object_left = find_max_frequency(frequencies, fft_out_left_channel)
@@ -67,8 +77,8 @@ max_y_delta_minor = round( (max_y/25)/multiple_minor)*multiple_minor
 
 print(f"max_y_delta_major={max_y_delta_major}, max_y_delta_minor={max_y_delta_minor}")
 
-major_ticks_x = np.arange(0, 25000, 1000)
-minor_ticks_x = np.arange(0, 25000, 200)
+major_ticks_x = np.arange(0, MAX_FREQUENCY+1, MAX_FREQUENCY/5)
+minor_ticks_x = np.arange(0, MAX_FREQUENCY+1, MAX_FREQUENCY/25)
 major_ticks_y = np.arange(0, max_y, max_y_delta_major)
 minor_ticks_y = np.arange(0, max_y, max_y_delta_minor)
 ax.set_xticks(major_ticks_x)
@@ -84,5 +94,5 @@ plt.xlabel("Frequency, Hz")
 plt.plot(frequencies, fft_out_left_channel, label="Left channel")
 plt.plot(frequencies, fft_out_right_channel, label="Right channel")
 plt.legend(loc=0, frameon=True)
-plt.xlim([0, 5000])
-plt.show()
+plt.xlim([0, MAX_FREQUENCY])
+fig.savefig(f'{fragment_filename_without_extension}.png')
